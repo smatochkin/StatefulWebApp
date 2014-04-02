@@ -1,9 +1,13 @@
 <%@ page session="true" import="java.util.*" import="java.io.*" import="java.net.*" %>
+<%
+  String[] ipa = request.getLocalAddr().toString().split("\\.");
+%>
 <html>
   <style>
-    .two {background: #2B65EC;}
-    .one {background: lightgreen;}
-    .vip {background: salmon;}
+    .ip  {
+      background-color: rgb(<%= ipa[1] %>, <%= ipa[2] %>, <%= ipa[3] %>);
+      color: rgb(<%= 255 - Integer.parseInt(ipa[1]) %>, <%= 255 - Integer.parseInt(ipa[2]) %>, <%= 255 - Integer.parseInt(ipa[3]) %>);
+    }
   </style>
 <head>
   <title>Simple Web App</title>
@@ -13,17 +17,7 @@
   <h1>Stateful Web App</h1>
   This is a simple <b>stateful</b> application.<p/>
   <table>
-  <tr><td>Current time</td><td><%= new java.util.Date() %></td></tr>
-  <%
-          String tdClass = "";
-          if (request.getLocalAddr().matches(".*123.*")) {
-            tdClass = " class=\"one\"";
-          } else if (request.getLocalAddr().matches(".*122.*")) {
-            tdClass = " class=\"two\"";
-          } else {
-            tdClass = " class=\"vip\"";
-          }
-  %>
+  <tr><td class="ip">Current time</td><td><%= new java.util.Date() %></td></tr>
   <tr><td>Front-end server</td><td><%= request.getLocalAddr() %></td></tr>
   <%
     Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
@@ -32,15 +26,8 @@
         continue;
       Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
       for (InetAddress inetAddress : Collections.list(inetAddresses)) {
-          if (inetAddress.toString().matches(".*123.*")) {
-            tdClass = " class=\"one\"";
-            out.println("  <tr><td>Back-end server IP</td><td" + tdClass +">" + inetAddress + "</td></tr>");
-          } else if (inetAddress.toString().matches(".*122.*")) {
-            tdClass = " class=\"two\"";
-            out.println("  <tr><td>Back-end server IP</td><td" + tdClass +">" + inetAddress + "</td></tr>");
-          } else {
-            tdClass = " class=\"vip\"";
-          }
+        // out.println("  <tr><td>Back-end server IP</td><td>" + inetAddress + "</td></tr>");
+        %><tr><td>Back-end server IP</td><td><%= inetAddress %></td></tr><%
       }
     }
   %>
